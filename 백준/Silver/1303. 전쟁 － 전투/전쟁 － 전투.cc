@@ -64,8 +64,8 @@ int main()
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
 			if (visited[i][j]) continue;
-			//int sum = dfs(i, j, map[i][j], 1);
-			int sum = bfs(i, j, map[i][j], 1);
+			int sum = dfs(i, j, map[i][j], 1);
+			//int sum = bfs(i, j, map[i][j], 1);
 			if (map[i][j] == 'W')
 			{
 				w_result = w_result + sum * sum;
