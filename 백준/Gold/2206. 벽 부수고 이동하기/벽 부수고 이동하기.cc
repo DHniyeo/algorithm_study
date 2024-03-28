@@ -35,8 +35,8 @@ int bfs() {
 
 			if (map[ny][nx] == '1') { // 벽을 만난 경우
 				if (now.isbroken == true) continue;
-				if (visited[ny][nx][0] == 1) continue;
-				visited[ny][nx][0] = 1;
+				if (visited[ny][nx][1] == 1) continue;
+				visited[ny][nx][1] = 1;
 				q.push({ ny,nx, now.dist + 1, true });
 			}
 			else if (map[ny][nx] == '0') { // 벽이 아닌경우
