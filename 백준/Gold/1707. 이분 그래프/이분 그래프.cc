@@ -19,7 +19,7 @@ void init() {
 		G[v].push_back(u);
 	}
 }
-bool bfs() {
+bool dfs() {
 	stack<int> q;
 	for (int i = 1; i <= V; i++) {
 		q.push(i);
@@ -33,7 +33,7 @@ bool bfs() {
 				Node_Color[Next_node] = next_color;
 				q.push(Next_node);
 			}
-			else if(Node_Color[Next_node] != next_color){ // 방문한 노드인데 next Color와 다르다면
+			else if (Node_Color[Next_node] != next_color) { // 방문한 노드인데 next Color와 다르다면
 				return false;
 			}
 		}
@@ -45,7 +45,7 @@ int main() {
 	scanf("%d", &tc);
 	for (int T = 0; T < tc; T++) {
 		init();
-		bool result = bfs();
+		bool result = dfs();
 		if (result == true) {
 			printf("YES\n");
 		}
