@@ -40,16 +40,7 @@ void init() {
 		dq[y - 1][x - 1].push_back(i);
 	}
 }
-int check() {
-	int max = 0;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			int num = dq[i][j].size();
-			if (max < num) max = num;
-		}
-	}
-	return max;
-}
+
 void whitetile_move(int num) {
 	info now = vc[num];
 	int ny = now.y + dy[now.dir];
@@ -149,10 +140,9 @@ int gamespace() {
 
 		times++;
 		for (int i = 0; i < K; i++) {
-			if (flag == 1) return times;
 			move_chess(i);
+			if (flag == 1) return times;
 		}
-		if (flag == 1) return times;
 
 		if (times > 1000) {
 			times = -1;
