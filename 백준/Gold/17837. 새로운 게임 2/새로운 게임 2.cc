@@ -134,7 +134,7 @@ void move_chess(int num) {
 	}
 }
 
-int gamespace() {
+int gamestart() {
 	int times = 0;
 	while (1) {
 
@@ -154,5 +154,5 @@ int gamespace() {
 int main() {
 	init();
 
-	cout << gamespace() << endl;
+	cout << gamestart() << endl;
 }
