@@ -36,7 +36,7 @@ void init() {
 	for (int i = 0; i < K; i++) {
 		int y, x, dir;
 		cin >> y >> x >> dir;
-		vc.push_back({ y-1,x-1,dir-1 });
+		vc.push_back({ y - 1,x - 1,dir - 1 });
 		dq[y - 1][x - 1].push_back(i);
 	}
 }
@@ -55,9 +55,9 @@ void whitetile_move(int num) {
 	int ny = now.y + dy[now.dir];
 	int nx = now.x + dx[now.dir];
 	int size = dq[now.y][now.x].size();
-	
+
 	int now_index = 0;
-	for (int i = 0; i< size; i++) {
+	for (int i = 0; i < size; i++) {
 		if (dq[now.y][now.x][i] == num) { // 현재 체스말 위치 찾기
 			now_index = i;
 			break;
@@ -74,7 +74,7 @@ void whitetile_move(int num) {
 	while (move_cnt--) { // 기존에 있던 위치에서 삭제
 		dq[now.y][now.x].pop_back();
 	}
-	if (4 <= check()) flag = 1;
+	if (4 <= dq[ny][nx].size()) flag = 1;
 }
 void redtile_move(int num) {
 	info now = vc[num];
@@ -89,7 +89,7 @@ void redtile_move(int num) {
 			break;
 		}
 	}
-	for (int i = size -1; i >= now_index; i--) {
+	for (int i = size - 1; i >= now_index; i--) {
 		int chessnum = dq[now.y][now.x][i];
 		dq[ny][nx].push_back(chessnum); // 순서대로 쌓기
 		// 벡터 최신화
@@ -101,7 +101,7 @@ void redtile_move(int num) {
 		dq[now.y][now.x].pop_back();
 	}
 	// 쌓은 후 체크
-	if (4 <= check()) flag = 1;
+	if (4 <= dq[ny][nx].size()) flag = 1;
 }
 void bluetile_move(int num) {
 	// 방향 전환하기.
@@ -129,7 +129,7 @@ void move_chess(int num) {
 	int ny = now.y + dy[now.dir];
 	int nx = now.x + dx[now.dir];
 
-	if (ny>= N || nx >= N || ny <0 || nx<0 ) { // 파란색 타일
+	if (ny >= N || nx >= N || ny < 0 || nx < 0) { // 파란색 타일
 		bluetile_move(num);
 	}
 	else if (color_map[ny][nx] == 2) { // 파란색 타일
@@ -143,23 +143,26 @@ void move_chess(int num) {
 	}
 }
 
-
-int main() {
-	init();
+int gamespace() {
 	int times = 0;
 	while (1) {
 
 		times++;
 		for (int i = 0; i < K; i++) {
-			if (flag == 1) break;
+			if (flag == 1) return times;
 			move_chess(i);
 		}
-		if (flag == 1) break;
+		if (flag == 1) return times;
 
 		if (times > 1000) {
 			times = -1;
 			break;
 		}
 	}
-	cout << times << endl;
+	return times;
+}
+int main() {
+	init();
+
+	cout << gamespace() << endl;
 }
