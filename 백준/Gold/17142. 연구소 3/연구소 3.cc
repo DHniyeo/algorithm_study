@@ -1,7 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<vector>
-#include<deque>
+#include<queue>
 using namespace std;
 // M개를 활성 상태로 변경하려고함 => dfs로 활성화 할 바이러스 선택
 // 0 빈칸, 1은 벽, 2는 바이러스
@@ -56,7 +56,7 @@ int spreadVirus() {
 	
 	int visited[50][50] = {0};
 	memset(spread_map,0,sizeof(spread_map));
-	deque<info> q;
+	queue<info> q;
 
 
 	for (int i = 0; i < N; i++) {
@@ -76,7 +76,7 @@ int spreadVirus() {
 	for (int i = 0; i < vc.size(); i++) {
 		if (choosedVirus[i] == 1) { // 활성화된 바이러스 표시
 			spread_map[vc[i].y][vc[i].x] = '0'; // 활성화 바이러스
-			q.push_back({ vc[i].y, vc[i].x });
+			q.push({ vc[i].y, vc[i].x });
 			visited[vc[i].y][vc[i].x] = 1;
 		}
 	}
@@ -84,7 +84,7 @@ int spreadVirus() {
 	const int dx[] = {0,0,-1,1};
 
 	while (!q.empty()) {
-		info now = q.front(); q.pop_front();
+		info now = q.front(); q.pop();
 
 		for (int i = 0; i < 4; i++) {
 			int ny = now.y + dy[i];
@@ -96,7 +96,7 @@ int spreadVirus() {
 				spread_map[ny][nx] = '0';
 			}
 			visited[ny][nx] = visited[now.y][now.x] + 1;
-			q.push_back({ ny,nx });
+			q.push({ ny,nx });
 		}
 	}
 	if (!findEmpty()) { // 빈공간이 없을때
