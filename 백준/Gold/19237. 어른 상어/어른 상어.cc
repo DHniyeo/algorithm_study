@@ -22,9 +22,9 @@ struct info_smell {
 };
 info_map shark_map[20][20] = {0};
 vector<info_smell> smell_map[20][20];
-int priority_map[401][5][5];
-const int dy[] = {0, -1, 1, 0,0};
-const int dx[] = {0, 0, 0, -1, 1}; // 위(1), 아래(2), 왼쪽(3), 오른쪽(4)
+int priority_map[401][4][4];
+const int dy[] = {-1, 1, 0,0};
+const int dx[] = {0, 0, -1, 1}; // 위(0), 아래(1), 왼쪽(2), 오른쪽(3)
 
 void init() {
 	
@@ -40,16 +40,18 @@ void init() {
 		for (int i = 0; i < N; i++) { // 
 			for (int j = 0; j < N; j++) {
 				if (shark_map[i][j].num == k) {
-					shark_map[i][j].dir = tmp_dir; // 1~4
+					shark_map[i][j].dir = tmp_dir - 1; // 0~3
 				}
 			}
 		}
 	}
 	
 	for (int i = 1; i <= M; i++) { // 우선순위
-		for (int j = 1; j <= 4; j++) {
-			for (int k = 1; k <= 4; k++) {
-				cin >> priority_map[i][j][k];
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 4; k++) {
+				int dir;
+				cin >> dir;
+				priority_map[i][j][k] = dir -1;
 			}
 		}
 	}
@@ -77,7 +79,7 @@ void moveshark() {
 				info_map shark = shark_map[i][j];
 				// 아무 냄새 없는 칸의 방향 찾기
 				bool flag = false;
-				for (int k = 1; k <= 4; k++) {
+				for (int k = 0; k < 4; k++) {
 					int ny = i + dy[priority_map[shark.num][shark.dir][k]];
 					int nx = j + dx[priority_map[shark.num][shark.dir][k]];
 					if (ny >= N || nx >= N || ny < 0 || nx < 0) continue;
@@ -91,7 +93,7 @@ void moveshark() {
 					break;
 				}
 				if (!flag) {
-					for (int k = 1; k <= 4; k++) {
+					for (int k = 0; k < 4; k++) {
 						int ny = i + dy[priority_map[shark.num][shark.dir][k]];
 						int nx = j + dx[priority_map[shark.num][shark.dir][k]];
 						if (ny >= N || nx >= N || ny < 0 || nx < 0) continue;
@@ -169,9 +171,7 @@ void printmap() {
 int main() {
 	init();
 	int time = 0;
-	
-	// 자신의 위치에서 냄새 뿌리기
-	spreadSmell();
+
 	while (1) {
 		// 1번 상어만 격자에 남아 있다면 break;
 		if (checkmap()) {
@@ -181,17 +181,21 @@ int main() {
 		if (time >= 1000) {
 			time = -1;
 			break;
-		}		
-		// 상어의 동시 이동
-		moveshark();
-		// 냄새 시간 증가 
-		plusSmellTime();
-		// 냄새 k번 이동하면 사라짐
-		removeSmell();
-		// 자신의 위치에서 냄새 뿌리기
+		}
+		// 1. 자신의 위치에서 냄새 뿌리기
 		spreadSmell();
+		
+		// 2. 상어의 동시 이동
+		moveshark();
+		
+		// 3. 냄새 시간 증가 
+		plusSmellTime();
+		
+		// 4. 냄새 k번 이동하면 사라짐
+		removeSmell();
 
 		time++;
+
 		//printmap();
 	}
 	cout << time;
