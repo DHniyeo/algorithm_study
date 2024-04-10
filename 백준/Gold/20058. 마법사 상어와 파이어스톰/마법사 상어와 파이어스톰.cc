@@ -113,13 +113,11 @@ int dx[] = { 0,0,-1,1 };
 struct loc{
 	int y, x;
 };
-struct info {
-	int cnt, size;
-};
-info cntNum(int y ,int x) {
+
+int cntNum(int y ,int x) {
 	queue<loc> q;
 	q.push({ y,x });
-	info result = {1,iceMap[y][x]};
+	int result = 1;
 
 
 	while (!q.empty()) {
@@ -131,8 +129,7 @@ info cntNum(int y ,int x) {
 			if (iceMap[ny][nx] == 0) continue; // 얼음 이없다면 안감
 			if (visited[ny][nx] == 1) continue; // 방문 한곳이라면 안감
 			visited[ny][nx] = 1;
-			result.cnt++; // 횟수 증가
-			result.size += iceMap[ny][nx]; // 크기 증가
+			result++; // 횟수 증가
 			q.push({ ny,nx });
 		}
 	}
@@ -149,9 +146,9 @@ int getBiGBolck() {
 			if (visited[i][j] == 1) continue;
 			if (iceMap[i][j] > 0) {
 				visited[i][j] = 1;
-				info now = cntNum(i, j);
-				if (now.cnt > result) { // 가장 큰 덩어리 찾기
-					result = now.cnt;
+				int nowcnt = cntNum(i, j);
+				if (nowcnt > result) { // 가장 큰 덩어리 찾기
+					result = nowcnt;
 				}
 			}
 		}
