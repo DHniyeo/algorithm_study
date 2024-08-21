@@ -1,113 +1,95 @@
-#include<iostream>
-#include<queue>
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <queue>
+
 using namespace std;
 
-int N;
-int map[20][20];
-struct shark_info {
-	int y, x, ate, size;
+int n;
+int map[21][21];
+struct Shark {
+	int y, x, size;
+	int eat; //  지금까지 먹은 물고기 개수
 };
-struct target_info {
-	int y, x, dist;
+struct Fish {
+	int y, x, lev;
 };
-struct queue_info {
-	int y, x, dist;
-};
-shark_info shark;
-target_info fish;
+Shark shark;
+int dy[4] = { -1,0,0,1 };
+int dx[4] = { 0,-1,1,0 };
 
-int dist = 0;
-void init() {
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			cin >> map[i][j];
-			if (map[i][j] == 9) { // 상어 정보 초기화
-				shark.y = i;
-				shark.x = j;
-				shark.ate = 0;
-				shark.size = 2;
-			}
-		}
+struct Compare {
+	bool operator() ( Fish f, Fish tar ) {
+		if (tar.lev < f.lev) return true;
+		else if (tar.lev > f.lev) return false;
+
+		if (tar.y < f.y) return true;
+		else if (tar.y > f.y) return false;
+
+		return tar.x < f.x;
 	}
-}
-int bfs(int target_y, int target_x) {
-	const int dy[] = {-1,1,0,0};
-	const int dx[] = {0,0,-1,1};
+};
 
-	int dist = 1e9;
-	int visited[20][20] = { 0 };
-	queue<queue_info> q;
-	q.push({ shark.y,shark.x,0 });
+Fish bfs() {
+	Fish f = { -1,-1,-1 };
+	priority_queue<Fish, vector<Fish>, Compare> q;
+	int visited[21][21] = { 0, };
 
+	q.push({ shark.y, shark.x });
+	visited[shark.y][shark.x] = 1;
 	while (!q.empty()) {
-		queue_info now = q.front(); q.pop();
+		Fish now = q.top();
+		q.pop();
 
-		if (now.y == target_y && now.x == target_x) {
-			dist = now.dist;
-			break;
-		}
+		if (1 <= map[now.y][now.x] && map[now.y][now.x] < shark.size) return now;
 
 		for (int i = 0; i < 4; i++) {
 			int ny = now.y + dy[i];
 			int nx = now.x + dx[i];
-			if (ny >= N || nx >= N || ny < 0 || nx < 0) continue;
-			if (map[ny][nx] > shark.size) continue;
-			if (visited[ny][nx] == 1) continue;
+			if (ny < 0 || ny >= n || nx < 0 || nx >= n) continue;
+			if (visited[ny][nx] || map[ny][nx] > shark.size) continue;
+
+			q.push({ ny,nx,now.lev + 1 });
 			visited[ny][nx] = 1;
-			q.push({ ny,nx,now.dist + 1 });
 		}
 	}
-	return dist;
-
+	return f;
 }
-bool find_fish() { // 경로상 먹을 수 있는 물고기 찾기 (fish data 최신화)
-	int minV = 1e9;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			if (map[i][j] != 0 && map[i][j] != 9 && map[i][j] < shark.size) {
-				int dist = bfs(i, j);
-				if (dist < minV) { // 최솟값 갱신
-					minV = dist;
-					fish.y = i;
-					fish.x = j;
-					fish.dist = minV;
-				}
-			}
+
+int solve() {
+	int t = 0;
+	while (1) {
+		// 1. bfs 
+		Fish ret = bfs();
+		if (ret.y == -1) return t;
+
+		// 2. 물고기 먹기
+		map[ret.y][ret.x] = 0;
+		shark.y = ret.y, shark.x = ret.x;
+		if (++shark.eat == shark.size) {
+			shark.size++;
+			shark.eat = 0;
 		}
+		t += ret.lev;
 	}
-	if (minV == 1e9) {
-		return false;
-	}
-	else {
-		return true;
-	}
-
-}
-void eat_fish() {
-	// 맵 최신화
-	map[shark.y][shark.x] = 0;
-	map[fish.y][fish.x] = 9;
-	// shark 위치 이동
-	shark.y = fish.y;
-	shark.x = fish.x;
-	shark.ate++;
-	if (shark.ate == shark.size) { // 상어 크기 반영
-		shark.ate = 0;
-		shark.size++;
-	}
+	return t;
 }
 
 int main() {
-	init();
-	int T =0;
-	while (1) {
-		if (!find_fish()) { // 먹을수 있는 물고기 존재 x
-			break;
-		}
-		eat_fish();
-		T += fish.dist;
-	}
-	cout << T;
+	//freopen("input.txt", "r", stdin);
 
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cin >> map[i][j];
+			if (map[i][j] == 9) { 
+				map[i][j] = 0;
+				shark = { i,j,2,0 }; 
+			}
+		}
+	}
+
+	int ans = solve();
+	printf("%d\n", ans);
+
+	return 0;
 }
