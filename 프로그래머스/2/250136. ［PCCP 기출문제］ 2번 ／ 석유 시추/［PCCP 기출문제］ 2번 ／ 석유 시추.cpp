@@ -16,11 +16,10 @@ int solution(vector<vector<int>> land) {
         for(int j = 0 ; j< C; j++){
             if(visited[i][j]) continue;
             if(land[i][j]==0) continue;
-            vector<int> arr;
+            int minx= j, maxx= j;
             visited[i][j] = 1;
             queue<pair<int,int>> q;
             q.push({i,j});
-            arr.push_back(j);
             int oil_size = 1;
             while(!q.empty()){
                 pair<int,int> now = q.front(); q.pop();
@@ -32,16 +31,13 @@ int solution(vector<vector<int>> land) {
                     if(land[ny][nx] == 0) continue;
                     visited[ny][nx] =1;
                     oil_size++;
-                    arr.push_back(nx);
+                    minx = minx > nx ? nx : minx;
+                    maxx = maxx < nx ? nx : maxx;
                     q.push({ny,nx});
                 }
-            }
-            vector<bool> visit(C,false);    
-            for(auto x : arr){
-                if(visit[x] == false){
-                    visit[x] = true;
-                    ans[x].push_back(oil_size); // x인덱스에 크기 추가
-                }
+            }    
+            for(int k = minx; k<= maxx; k++){
+                ans[k].push_back(oil_size);
             }
         }
     }
