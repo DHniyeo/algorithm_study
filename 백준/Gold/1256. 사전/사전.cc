@@ -7,7 +7,7 @@ long long make_d(int i, int j) {
 	if (i < 0 || j < 0) return 0;
 	if (d[i][j] == 0) {
 		d[i][j] = make_d(i - 1, j) + make_d(i - 1, j - 1);
-		if (d[i][j] > 1000000000) d[i][j] = 1000000001;
+		if (d[i][j] > 1000000000) d[i][j] = 1000000000; // 범위 초과...
 	}
 	return d[i][j];
 }
@@ -18,7 +18,7 @@ void init() {
 string solve() {
 	string result;
 	while (1) {
-		if (N == 0 || M == 0) break;
+		if (N == 0) break;
 		long long criteria = make_d(N + M - 1, M);
 		if (K > criteria) {
 			result += 'z';
@@ -30,24 +30,16 @@ string solve() {
 			N--;
 		}
 	}
-	if (N == 0) {
-		for (int i = 0; i < M; i++) {
-			result += 'z';
-		}
+	for (int i = 0; i < M; i++) {
+		result += 'z';
 	}
-	else if (M == 0) {
-		for (int i = 0; i < N; i++) {
-			result += 'a';
-		}
-	}
+
 	return result;
 }
 
 int main() {
 	init();
 	d[0][0] = 1;
-	d[1][0] = 1;
-	d[0][1] = 1;
 	long long max = make_d(N + M, N);
 	if (max < K) {
 		cout << "-1" << '\n';
