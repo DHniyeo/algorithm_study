@@ -1,49 +1,32 @@
-#include<iostream>
-#include<vector>
-#include<unordered_map>
-#include<algorithm>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-int N;
-unordered_map<int,bool> m;
-vector<int> dict;
-vector<int> target;
-int mem_result[1'000'000] = {0};
-
-void init() {
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		int num;
-		cin >> num;
-		if (!m[num]) {
-			m[num] = true;
-			dict.push_back(num);
-		}
-		target.push_back(num);
-	}
-	sort(dict.begin(), dict.end());
-}
-int find_target_index(int target_num) {
-
-	int st = 0;
-	int en = dict.size() - 1;
-	while (st <= en) {
-		int mid = (st + en) / 2;
-		if (dict[mid] < target_num) {
-			st = mid + 1;
-		}
-		else if (dict[mid] > target_num) {
-			en = mid - 1;
-		}
-		else {
-			return mid;
-		}
-	}
-	return 0;
-}
 int main() {
-	init();
-	for (int a : target) {
-		cout << find_target_index(a) << " ";	
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N;
+	cin >> N;
+
+	vector<int> arr(N);  // 원본 배열
+	vector<int> sorted(N);  // 정렬될 배열
+
+	// 입력
+	for (int i = 0; i < N; i++) {
+		cin >> arr[i];
+		sorted[i] = arr[i];
 	}
+
+	// 정렬 및 중복 제거
+	sort(sorted.begin(), sorted.end());
+	sorted.erase(unique(sorted.begin(), sorted.end()), sorted.end());
+
+	// 각 원소마다 lower_bound로 위치 찾기
+	for (int i = 0; i < N; i++) {
+		cout << lower_bound(sorted.begin(), sorted.end(), arr[i]) - sorted.begin() << ' ';
+	}
+
+	return 0;
 }
